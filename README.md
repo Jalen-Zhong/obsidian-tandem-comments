@@ -1,5 +1,10 @@
 # Tandem Comments
 
+[![Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22tandem-comments%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json)](https://obsidian.md/plugins?id=tandem-comments)
+[![Release](https://img.shields.io/github/v/release/leonpawelzik/obsidian-tandem-comments)](https://github.com/leonpawelzik/obsidian-tandem-comments/releases/latest)
+[![Stars](https://img.shields.io/github/stars/leonpawelzik/obsidian-tandem-comments?style=flat)](https://github.com/leonpawelzik/obsidian-tandem-comments/stargazers)
+[![License](https://img.shields.io/github/license/leonpawelzik/obsidian-tandem-comments)](https://github.com/leonpawelzik/obsidian-tandem-comments/blob/main/LICENSE)
+
 Quote-anchored comments and edit suggestions for [Obsidian](https://obsidian.md) notes. Review threads live in a single block at the end of the file. Your prose stays untouched until you accept a suggestion, and AI assistants can read, write, and act on them with nothing but file access.
 
 ![Tandem Comments demo](docs/demo.gif)
@@ -166,6 +171,10 @@ The real sanitizer cannot run under the test harness (Node/Vitest has no Obsidia
 | `[x](javascript:alert(1))` | Click does nothing; scheme neutralized |
 | `<a href="vbscript:…">`, `data:` URL | Neutralized |
 
+## Support
+
+If Tandem Comments is useful to you, a [⭐ on GitHub](https://github.com/leonpawelzik/obsidian-tandem-comments) helps other people find it. Bug reports and ideas are welcome as [issues](https://github.com/leonpawelzik/obsidian-tandem-comments/issues).
+
 ## License
 
-[MIT](LICENSE)
+[MIT](https://github.com/leonpawelzik/obsidian-tandem-comments/blob/main/LICENSE)

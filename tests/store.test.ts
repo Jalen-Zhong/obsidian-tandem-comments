@@ -136,6 +136,14 @@ describe("serializeDocument", () => {
     expect(serializeDocument({ prose: doc.prose, comments: {} }, true)).toBe(original);
   });
 
+  it("tells agents without the skill to reply in every open thread and keep anchors attached (issue #35)", () => {
+    const out = serializeDocument({ prose: "X", comments: COMMENTS }, true);
+    expect(out).toContain("// Addressing comments: handle every open id.");
+    expect(out).toContain("append a reply {author: your name, ts, text} to its thread");
+    expect(out).toContain("update its anchor to the new wording");
+    expect(parseDocument(out).comments).toEqual(COMMENTS);
+  });
+
   it("omits hint lines when schemaHint is false", () => {
     const out = serializeDocument({ prose: "X", comments: COMMENTS }, false);
     expect(out).not.toContain("// Schema");

@@ -21,7 +21,7 @@ import {
   validateExportNameTemplate,
   validateVaultFolderPath,
 } from "./settings-model";
-import { exportSkill } from "./skill-export";
+import { exportSkill, type SkillTarget } from "./skill-export";
 
 class VaultFolderSuggest extends AbstractInputSuggest<TFolder> {
   protected getSuggestions(query: string): TFolder[] {
@@ -298,18 +298,21 @@ export class CommentsSettingTab extends PluginSettingTab {
       );
 
     if (Platform.isDesktopApp) {
+      const exportButton = (target: SkillTarget) => () => {
+        try {
+          new Notice("Skill exported: " + exportSkill(target));
+        } catch (error) {
+          new Notice("Export failed: " + (error instanceof Error ? error.message : String(error)));
+        }
+      };
       new Setting(containerEl)
-        .setName("Claude Code skill")
-        .setDesc("Write the bundled skill to ~/.claude/skills/obsidian-tandem-comments/SKILL.md.")
-        .addButton((button) =>
-          button.setButtonText("Export skill").onClick(() => {
-            try {
-              new Notice("Skill exported: " + exportSkill());
-            } catch (error) {
-              new Notice("Export failed: " + (error instanceof Error ? error.message : String(error)));
-            }
-          })
-        );
+        .setName("AI assistant skill")
+        .setDesc(
+          "Teach your coding agent the comment format. Claude Code reads ~/.claude/skills, " +
+            "Codex reads ~/.agents/skills. Export again after updating the plugin."
+        )
+        .addButton((button) => button.setButtonText("Export for Claude Code").onClick(exportButton("claude")))
+        .addButton((button) => button.setButtonText("Export for Codex").onClick(exportButton("codex")));
     }
 
     new Setting(containerEl).setName("Feedback").setHeading();

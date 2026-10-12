@@ -22,7 +22,7 @@ Quote-anchored comments and edit suggestions for [Obsidian](https://obsidian.md)
 - **Resolve = remove** by default, keeping files clean (history mode available in settings)
 - **Copy & export:** copy any thread as Markdown (with or without its quote), or export all of a file's threads to a review note in a folder of your choice
 - **Invisible while you write:** the comment block is hidden in Live Preview and shows up in Reading View as a compact "💬 N threads" pill (which can be turned off)
-- **AI-ready by design:** the block is plain, self-describing JSON; the settings tab exports a skill file that teaches Claude Code the format
+- **AI-ready by design:** the block is plain, self-describing JSON; the settings tab exports a skill file that teaches Claude Code or Codex the format
 
 ## Installation
 
@@ -140,7 +140,7 @@ Claude proposes replacements for those two passages and explains each change in
 its thread. The prose stays byte-for-byte identical until you review the
 suggestions in Obsidian and accept the ones you want.
 
-For Claude Code, open **Settings → Tandem Comments → Advanced & integrations** and use **Export skill**. This writes a ready-made skill to `~/.claude/skills/obsidian-tandem-comments/` that teaches it the format and conventions. Skill export is available in the desktop app; the comment format itself works the same on mobile.
+To teach your coding agent the format, open **Settings → Tandem Comments → Advanced & integrations** and use **Export for Claude Code** (writes `~/.claude/skills/obsidian-tandem-comments/`) or **Export for Codex** (writes `~/.agents/skills/obsidian-tandem-comments/`). The skill covers the format, anchoring, edit suggestions and how to work through every open thread without skipping any. Export again after updating the plugin to get the latest version. Skill export is available in the desktop app; the comment format itself works the same on mobile.
 
 ## Settings
 
@@ -149,7 +149,7 @@ Settings are grouped into four sections and apply live:
 - **Identity & appearance:** display name for this device, highlight color and opacity, author name colors with per-author overrides
 - **Review workflow:** remove or keep resolved threads, show resolved by default, sidebar order (document position, newest or oldest activity), submit shortcut (Enter or Cmd/Ctrl+Enter), timestamp style (full, compact, relative, or hidden), confirmation before destructive actions
 - **Copy & export:** include the quote when copying, export scope (all threads, or open and orphaned only), export note name (`{{filename}}`, `{{date}}`), export folder
-- **Advanced & integrations:** Reading View pill, schema hints in the comment block, Claude Code skill export
+- **Advanced & integrations:** Reading View pill, schema hints in the comment block, skill export for Claude Code and Codex
 
 ## Why a block at the end of the file?
 

@@ -14,6 +14,9 @@ import type {
 export const SCHEMA_HINT_LINES = [
   '// Schema: { "<id>": { anchor:{exact,prefix,suffix,pos?}, status:open|resolved, thread:[{author,ts,text}], suggestion?:{replacement,author,ts,result?} } }',
   '// Anchor = quote from the prose. To locate: search for "exact", disambiguate via prefix/suffix.',
+  // Ohne diese Zeile editieren Agents ohne Skill oft nur die Prosa und lassen
+  // Threads unbeantwortet mit veralteten Ankern zurück (Issue #35).
+  "// Addressing comments: handle every open id. After acting, append a reply {author: your name, ts, text} to its thread, and if you edited the quoted text, update its anchor to the new wording.",
 ];
 
 const FENCE_OPEN = "```tandem-comments";

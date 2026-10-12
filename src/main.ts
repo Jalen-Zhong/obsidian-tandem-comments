@@ -1,6 +1,6 @@
 import type { EditorView } from "@codemirror/view";
 import { PendingAnchorSaves } from "./pending-anchor-saves";
-import { editorInfoField, Editor, MarkdownView, Notice, normalizePath, Plugin, TFile } from "obsidian";
+import { editorInfoField, editorLivePreviewField, Editor, MarkdownView, Notice, normalizePath, Plugin, TFile } from "obsidian";
 import {
   AUTHOR_OVERRIDE_KEY,
   detectOsUsername,
@@ -10,6 +10,7 @@ import {
 } from "./author";
 import { confirmAction } from "./confirm-action";
 import { buildEditorExtension, type AnchorSaveTarget } from "./editor-extension";
+import { buildHiddenBlockExtension } from "./hidden-block";
 import {
   buildExportNote,
   formatTs,
@@ -68,7 +69,7 @@ export default class CommentsPlugin extends Plugin {
       defaultMod: false,
     });
     this.registerView(VIEW_TYPE_COMMENTS, (leaf) => new CommentSidebar(leaf, this));
-    this.registerEditorExtension(buildEditorExtension(this));
+    this.registerEditorExtension([buildEditorExtension(this), buildHiddenBlockExtension(editorLivePreviewField)]);
     registerReadingView(this);
     this.addSettingTab(new CommentsSettingTab(this.app, this));
 

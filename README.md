@@ -40,6 +40,7 @@ Your note text. We should cut prices hard in Q3.
 ```tandem-comments
 // Schema: { "<id>": { anchor:{exact,prefix,suffix,pos?}, status:open|resolved, thread:[{author,ts,text}], suggestion?:{replacement,author,ts,result?} } }
 // Anchor = quote from the prose. To locate: search for "exact", disambiguate via prefix/suffix.
+// Addressing comments: handle every open id. After acting, append a reply {author: your name, ts, text} to its thread, and if you edited the quoted text, update its anchor to the new wording.
 {
   "a1f3": {
     "anchor": { "exact": "cut prices hard", "prefix": "We should ", "suffix": " in Q3", "pos": 26 },
@@ -139,6 +140,14 @@ You leave comments where the draft needs work (*"weaker verb here?"* on one sent
 Claude proposes replacements for those two passages and explains each change in
 its thread. The prose stays byte-for-byte identical until you review the
 suggestions in Obsidian and accept the ones you want.
+
+Or let the assistant work through the comments directly:
+
+> ❯ codex "address the review comments in hoi-an-draft.md"
+
+It edits only the passages you commented on and replies in every open thread with what it changed, or asks when a comment needs information it does not have. Anchors follow the new wording, so the highlights stay attached, and the threads stay open until you resolve them in Obsidian. Threads it could not act on, such as a comment whose quoted text no longer exists, get a reply instead of being dropped.
+
+The comment block itself carries short format hints (see [How it works](#how-it-works)), so an assistant that has never seen the plugin can still reply in the right place. The skill adds the full rules and makes long notes with many threads reliable.
 
 To teach your coding agent the format, open **Settings → Tandem Comments → Advanced & integrations** and use **Export for Claude Code** (writes `~/.claude/skills/obsidian-tandem-comments/`) or **Export for Codex** (writes `~/.agents/skills/obsidian-tandem-comments/`). The skill covers the format, anchoring, edit suggestions and how to work through every open thread without skipping any. Export again after updating the plugin to get the latest version. Skill export is available in the desktop app; the comment format itself works the same on mobile.
 

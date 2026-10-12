@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { SKILL_MARKDOWN } from "../src/skill-export";
+import { SKILL_MARKDOWN, writeSkill } from "../src/skill-export";
 
 describe("exported Claude skill edit-suggestion contract", () => {
   it("documents the optional suggestion schema and replacement metadata", () => {
@@ -37,5 +37,66 @@ describe("exported Claude skill edit-suggestion contract", () => {
   it("documents accepted and declined history outcomes", () => {
     expect(SKILL_MARKDOWN).toContain('suggestion.result: "accepted"');
     expect(SKILL_MARKDOWN).toContain('suggestion.result: "declined"');
+  });
+});
+
+describe("exported skill coverage contract (issue #35)", () => {
+  const contract = SKILL_MARKDOWN.replace(/\s+/g, " ");
+
+  it("makes agents inventory every open thread before addressing comments", () => {
+    expect(contract).toContain("handle **every** open thread");
+    expect(contract).toContain("parse the JSON block with a script and list every id");
+  });
+
+  it("forbids skipping an open thread silently and asks for a per-id report", () => {
+    expect(contract).toContain("Never skip an id silently");
+    expect(contract).toContain("per-id summary");
+  });
+
+  it("keeps unlocatable anchors instead of dropping them", () => {
+    expect(contract).toContain("an anchor you cannot locate: keep the entry");
+  });
+
+  it("does not sign replies as Claude when another assistant uses the skill", () => {
+    expect(SKILL_MARKDOWN).not.toContain('"author": "Claude"');
+    expect(contract).toContain("Use your own assistant name as author");
+  });
+
+  it("triggers on requests to address review comments", () => {
+    expect(SKILL_MARKDOWN.split("\n")[2]).toContain("address or work through review comments");
+  });
+});
+
+describe("skill export targets", () => {
+  function fakeNode() {
+    const writes: Record<string, string> = {};
+    const dirs: string[] = [];
+    return {
+      writes,
+      dirs,
+      deps: {
+        fs: {
+          mkdirSync: (dir: string) => void dirs.push(dir),
+          writeFileSync: (file: string, data: string) => void (writes[file] = data),
+        },
+        os: { homedir: () => "/home/u" },
+        path: { join: (...parts: string[]) => parts.join("/") },
+      },
+    };
+  }
+
+  it("writes the Claude Code skill to ~/.claude/skills", () => {
+    const node = fakeNode();
+    const file = writeSkill("claude", node.deps);
+    expect(file).toBe("/home/u/.claude/skills/obsidian-tandem-comments/SKILL.md");
+    expect(node.writes[file]).toBe(SKILL_MARKDOWN);
+  });
+
+  it("writes the Codex skill to ~/.agents/skills, where Codex discovers user skills", () => {
+    const node = fakeNode();
+    const file = writeSkill("codex", node.deps);
+    expect(file).toBe("/home/u/.agents/skills/obsidian-tandem-comments/SKILL.md");
+    expect(node.dirs).toContain("/home/u/.agents/skills/obsidian-tandem-comments");
+    expect(node.writes[file]).toBe(SKILL_MARKDOWN);
   });
 });

@@ -34,6 +34,9 @@ interface BlockMatch {
   proseEnd: number;
   body: string;
   trailing: string;
+  /** Offsets der Fence-Zeilen: Start der öffnenden, Ende der schließenden Zeile. */
+  from: number;
+  to: number;
 }
 
 function findBlock(raw: string): BlockMatch | null {
@@ -41,16 +44,17 @@ function findBlock(raw: string): BlockMatch | null {
   // Definitionen, die Obsidian ans Dateiende hängt — Issue #2).
   const idx = raw.lastIndexOf("\n" + FENCE_OPEN + "\n");
   let proseEnd: number;
-  let bodyStart: number;
+  let from: number;
   if (idx >= 0) {
     proseEnd = idx;
-    bodyStart = idx + FENCE_OPEN.length + 2;
+    from = idx + 1;
   } else if (raw.startsWith(FENCE_OPEN + "\n")) {
     proseEnd = 0;
-    bodyStart = FENCE_OPEN.length + 1;
+    from = 0;
   } else {
     return null;
   }
+  const bodyStart = from + FENCE_OPEN.length + 1;
   const rest = raw.slice(bodyStart);
   // Die eigene schließende Fence ist die erste vollständige ```-Zeile; der Body
   // kann keine enthalten (JSON escapet Newlines, Hint-Zeilen beginnen mit //).
@@ -60,7 +64,18 @@ function findBlock(raw: string): BlockMatch | null {
   }
   if (closeIdx < 0) return null;
   const trailing = closeIdx + 5 <= rest.length ? rest.slice(closeIdx + 5) : "";
-  return { proseEnd, body: rest.slice(0, closeIdx), trailing };
+  // "\n```" beginnt bei closeIdx; die schließende Zeile endet 4 Zeichen später.
+  return { proseEnd, body: rest.slice(0, closeIdx), trailing, from, to: bodyStart + closeIdx + 4 };
+}
+
+/**
+ * Zeichen-Bereich des Blocks von der öffnenden bis zum Ende der schließenden
+ * Fence-Zeile (ohne das Newline danach) — dieselbe Erkennung wie parseDocument,
+ * damit Ausblenden und Parsen immer denselben Block meinen.
+ */
+export function findBlockRange(raw: string): { from: number; to: number } | null {
+  const match = findBlock(raw);
+  return match ? { from: match.from, to: match.to } : null;
 }
 
 export function parseDocument(raw: string): ParsedDoc {

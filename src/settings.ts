@@ -64,6 +64,8 @@ function renderColorReadability(container: HTMLElement, color: string): void {
   });
 }
 
+const REPO_URL = "https://github.com/leonpawelzik/obsidian-tandem-comments";
+
 export class CommentsSettingTab extends PluginSettingTab {
   private authorColorsExpanded = false;
 
@@ -309,6 +311,21 @@ export class CommentsSettingTab extends PluginSettingTab {
           })
         );
     }
+
+    new Setting(containerEl).setName("Feedback").setHeading();
+
+    new Setting(containerEl)
+      .setName("Enjoying Tandem Comments?")
+      .setDesc("A star on GitHub helps other people find the plugin. Bugs and ideas are welcome as issues.")
+      .addButton((button) =>
+        button.setButtonText("Report an issue").onClick(() => window.open(`${REPO_URL}/issues`))
+      )
+      .addButton((button) =>
+        button
+          .setButtonText("Star on GitHub")
+          .setCta()
+          .onClick(() => window.open(REPO_URL))
+      );
   }
 
   private renderAuthorColors(containerEl: HTMLElement): void {

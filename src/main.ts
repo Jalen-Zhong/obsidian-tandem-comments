@@ -1,6 +1,6 @@
 import type { EditorView } from "@codemirror/view";
 import { PendingAnchorSaves } from "./pending-anchor-saves";
-import { editorInfoField, editorLivePreviewField, Editor, MarkdownView, Notice, normalizePath, Plugin, TFile } from "obsidian";
+import { editorInfoField, editorLivePreviewField, Editor, MarkdownView, Notice, normalizePath, Plugin, requestUrl, TFile } from "obsidian";
 import {
   AUTHOR_OVERRIDE_KEY,
   detectOsUsername,
@@ -37,12 +37,29 @@ import {
   serializeDocument,
 } from "./store";
 import type { Anchor, ParsedDoc } from "./types";
+import { cloneCommentMap, webhookHttpRequest, WebhookNotifier, type WebhookPostResult } from "./webhook";
+
+function postGrokWebhook(url: string, senderKey: string, body: string): Promise<WebhookPostResult> {
+  const request = webhookHttpRequest(senderKey, body);
+  return requestUrl({
+    url,
+    method: request.method,
+    contentType: "application/json",
+    headers: request.headers,
+    body: request.body,
+    throw: false,
+  }).then((response) => ({
+    ok: response.status >= 200 && response.status < 300,
+    status: response.status,
+  }));
+}
 
 export default class CommentsPlugin extends Plugin {
   settings: CommentsSettings = DEFAULT_SETTINGS;
   private applyingSuggestion = false;
   private anchorSaves = new PendingAnchorSaves<TFile>((file, update) => this.app.vault.process(file, update));
   private settingsWriteQueue: Promise<void> = Promise.resolve();
+  private webhook = new WebhookNotifier(postGrokWebhook);
 
   captureAnchorSave(view: EditorView, previous?: AnchorSaveTarget): AnchorSaveTarget | undefined {
     const file = view.state.field(editorInfoField, false)?.file;
@@ -300,9 +317,19 @@ export default class CommentsPlugin extends Plugin {
       new Notice("tandem-comments block is invalid — please fix the JSON: " + doc.error);
       return false;
     }
+    const before = cloneCommentMap(doc.comments);
     mutate(doc);
     const out = serializeDocument(doc, this.settings.schemaHint);
-    if (out !== raw) await this.app.vault.modify(file, out);
+    if (out === raw) return true;
+    await this.app.vault.modify(file, out);
+    void this.webhook.notify({
+      settings: this.settings,
+      vaultRelativePath: file.path,
+      noteTitle: file.basename,
+      deviceAuthor: this.currentAuthor(),
+      before,
+      after: doc.comments,
+    });
     return true;
   }
 

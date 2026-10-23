@@ -1,9 +1,9 @@
 {
-  "id": "tandem-comments",
-  "name": "Tandem Comments",
-  "version": "0.5.4",
+  "id": "tandem-comments-grok-webhook",
+  "name": "Tandem Comments (Grok webhook)",
+  "version": "0.5.5-grok.1",
   "minAppVersion": "1.8.7",
-  "description": "Google Docs-style comments and edit suggestions for Markdown notes. Quote-anchored threads keep prose clean and remain readable by AI assistants.",
+  "description": "Personal fork of Tandem Comments. Quote-anchored comments and edit suggestions, plus a Grok Bot webhook wake when an open thread is created or answered.",
   "author": "Leon Pawelzik",
   "authorUrl": "https://github.com/leonpawelzik",
   "isDesktopOnly": false

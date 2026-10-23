@@ -297,6 +297,51 @@ export class CommentsSettingTab extends PluginSettingTab {
           .onChange((value) => this.plugin.updateSettings({ schemaHint: value }))
       );
 
+    new Setting(containerEl).setName("Grok Bot webhook").setHeading();
+
+    new Setting(containerEl)
+      .setName("Wake Grok on new comments")
+      .setDesc(
+        "Off until you turn it on. Paste the webhook URL and sender key from the Grok Bot routine panel. " +
+          "The key stays in this plugin's data.json on this device and is not written into notes. " +
+          "A wake is sent after a new open comment, or a reply on a thread that is still open. " +
+          "Resolved threads and messages from another author do not send."
+      )
+      .addToggle((toggle) =>
+        toggle
+          .setValue(this.plugin.settings.webhookEnabled)
+          .onChange((value) => this.plugin.updateSettings({ webhookEnabled: value }))
+      );
+
+    new Setting(containerEl)
+      .setName("Webhook URL")
+      .setDesc("Paste the full webhook URL from the Grok Bot routine panel.")
+      .addText((text) => {
+        text
+          .setPlaceholder("https://")
+          .setValue(this.plugin.settings.webhookUrl)
+          .onChange((value) => this.plugin.updateSettings({ webhookUrl: value.trim() }));
+        text.inputEl.name = "tandem-comments-webhook-url";
+        text.inputEl.autocomplete = "off";
+        text.inputEl.spellcheck = false;
+        text.inputEl.setAttr("aria-label", "Grok Bot webhook URL");
+      });
+
+    new Setting(containerEl)
+      .setName("Webhook sender key")
+      .setDesc("Sender key from the same panel. Stored only in plugin data and not logged.")
+      .addText((text) => {
+        text
+          .setPlaceholder("Sender key")
+          .setValue(this.plugin.settings.webhookSenderKey)
+          .onChange((value) => this.plugin.updateSettings({ webhookSenderKey: value.trim() }));
+        text.inputEl.type = "password";
+        text.inputEl.name = "tandem-comments-webhook-sender-key";
+        text.inputEl.autocomplete = "off";
+        text.inputEl.spellcheck = false;
+        text.inputEl.setAttr("aria-label", "Grok Bot webhook sender key");
+      });
+
     if (Platform.isDesktopApp) {
       const exportButton = (target: SkillTarget) => () => {
         try {

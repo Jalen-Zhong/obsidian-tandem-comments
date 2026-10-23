@@ -1,4 +1,6 @@
-# Tandem Comments
+# Tandem Comments (Grok webhook)
+
+Personal fork of [leonpawelzik/obsidian-tandem-comments](https://github.com/leonpawelzik/obsidian-tandem-comments) (MIT). Plugin id: `tandem-comments-grok-webhook`. Open comments and replies can wake a Grok Bot routine. Install and payload: [WEBHOOK.md](WEBHOOK.md).
 
 [![Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22tandem-comments%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json)](https://obsidian.md/plugins?id=tandem-comments)
 [![Release](https://img.shields.io/github/v/release/leonpawelzik/obsidian-tandem-comments)](https://github.com/leonpawelzik/obsidian-tandem-comments/releases/latest)
@@ -26,9 +28,9 @@ Quote-anchored comments and edit suggestions for [Obsidian](https://obsidian.md)
 
 ## Installation
 
-Tandem Comments is in the [Obsidian community plugin directory](https://obsidian.md/plugins?id=tandem-comments): in Obsidian, open **Settings → Community plugins → Browse**, search for **Tandem Comments**, then **Install** and **Enable**.
+Install this fork from [WEBHOOK.md](WEBHOOK.md): copy the built `main.js`, `manifest.json`, and `styles.css` into `<vault>/.obsidian/plugins/tandem-comments-grok-webhook/`. Disable the community plugin `tandem-comments` first so both copies are not loaded.
 
-Manual install: download `main.js`, `manifest.json`, and `styles.css` from the [latest release](https://github.com/leonpawelzik/obsidian-tandem-comments/releases/latest) into `<vault>/.obsidian/plugins/tandem-comments/` and enable it in **Settings → Community plugins**.
+The upstream plugin remains in the [Obsidian community plugin directory](https://obsidian.md/plugins?id=tandem-comments).
 
 ## How it works
 
@@ -159,6 +161,7 @@ Settings are grouped into four sections and apply live:
 - **Review workflow:** remove or keep resolved threads, show resolved by default, sidebar order (document position, newest or oldest activity), submit shortcut (Enter or Cmd/Ctrl+Enter), timestamp style (full, compact, relative, or hidden), confirmation before destructive actions
 - **Copy & export:** include the quote when copying, export scope (all threads, or open and orphaned only), export note name (`{{filename}}`, `{{date}}`), export folder
 - **Advanced & integrations:** Reading View pill, schema hints in the comment block, skill export for Claude Code and Codex
+- **Grok Bot webhook:** optional routine URL and sender key. Off until enabled. See [WEBHOOK.md](WEBHOOK.md)
 
 ## Why a block at the end of the file?
 

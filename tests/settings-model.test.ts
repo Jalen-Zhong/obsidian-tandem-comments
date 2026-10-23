@@ -98,6 +98,34 @@ describe("settings model", () => {
       .toMatch(/^#[0-9a-f]{6}$/);
   });
 
+  it("stores the Grok webhook fields and keeps them off by default", () => {
+    expect(parseCommentsSettings(null).settings).toMatchObject({
+      webhookEnabled: false,
+      webhookUrl: "",
+      webhookSenderKey: "",
+    });
+
+    const result = parseCommentsSettings({
+      webhookEnabled: true,
+      webhookUrl: "  https://example.test/hook  ",
+      webhookSenderKey: "  local-test-sender  ",
+    });
+    expect(result.settings.webhookEnabled).toBe(true);
+    expect(result.settings.webhookUrl).toBe("https://example.test/hook");
+    expect(result.settings.webhookSenderKey).toBe("local-test-sender");
+  });
+
+  it("drops invalid webhook values", () => {
+    const result = parseCommentsSettings({
+      webhookEnabled: "yes",
+      webhookUrl: 12,
+      webhookSenderKey: { token: "nope" },
+    });
+    expect(result.settings.webhookEnabled).toBe(false);
+    expect(result.settings.webhookUrl).toBe("");
+    expect(result.settings.webhookSenderKey).toBe("");
+  });
+
   it("captures and removes the legacy synced author name", () => {
     const result = parseCommentsSettings({ authorName: "  Leon  " });
 

@@ -28,6 +28,12 @@ export interface CommentsSettings {
   exportDestination: ExportDestination;
   exportFolder: string;
   authorColorOverrides: AuthorColorOverrides;
+  /** When true, new open comments and replies POST a Grok Bot wake. Default off. */
+  webhookEnabled: boolean;
+  /** Full webhook URL from the Grok Bot routine panel. */
+  webhookUrl: string;
+  /** Bearer sender key. Stored only in plugin data.json, never in the note. */
+  webhookSenderKey: string;
 }
 
 export const DEFAULT_SETTINGS: CommentsSettings = {
@@ -49,6 +55,9 @@ export const DEFAULT_SETTINGS: CommentsSettings = {
   exportDestination: "source",
   exportFolder: "",
   authorColorOverrides: {},
+  webhookEnabled: false,
+  webhookUrl: "",
+  webhookSenderKey: "",
 };
 
 export interface ParsedCommentsSettings {
@@ -158,6 +167,9 @@ export function parseCommentsSettings(value: unknown): ParsedCommentsSettings {
         ? normalizeVaultFolderPath(raw.exportFolder)
         : DEFAULT_SETTINGS.exportFolder,
     authorColorOverrides: normalizeAuthorColorOverrides(raw.authorColorOverrides),
+    webhookEnabled: booleanSetting(raw.webhookEnabled, DEFAULT_SETTINGS.webhookEnabled),
+    webhookUrl: stringSetting(raw.webhookUrl, DEFAULT_SETTINGS.webhookUrl).trim(),
+    webhookSenderKey: stringSetting(raw.webhookSenderKey, DEFAULT_SETTINGS.webhookSenderKey).trim(),
   };
   const legacyAuthorName = typeof raw.authorName === "string" ? raw.authorName.trim() : undefined;
   return {
